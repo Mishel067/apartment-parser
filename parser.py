@@ -3,6 +3,14 @@ import json
 from typing import Any
 import sqlite3
 from types import TracebackType
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+logger.addHandler(stream_handler)
 
 class Parser:
     def __init__(self, url: str) -> None:
@@ -24,7 +32,6 @@ class Parser:
             'Pragma': 'no-cache',
             'Priority': 'u=1, i'
         }
-
     def parse(self, pages: int = 5) -> list[dict[str, Any]]:
         try:
             all_apartments = []
@@ -45,9 +52,10 @@ class Parser:
                                  'photos': i.get('photos', [{}])[0].get('thumbnail', 'Нет фото')}
                     data.append(apartment)
                 all_apartments.extend(data)
+            logger.info('Data parsed.')
             return all_apartments
         except Exception as err:
-            print('Error:', err)
+            logger.error(err, exc_info=True)
             return []
 
 class ToJson:
@@ -57,14 +65,17 @@ class ToJson:
 
     def __enter__(self):
         self.file = open(self.filename, 'w', encoding='utf-8')
+        logger.info('File opened.')
         return self
 
     def to_json(self) -> None:
         json.dump(self.data, self.file, indent=2, ensure_ascii=False)
+        logger.info('File created.')
 
     def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException | None, exc_traceback: TracebackType | None) -> bool:
         if self.file:
             self.file.close()
+        logger.info('File closed.')
         return False
 
 class ToDataBase:
@@ -74,7 +85,7 @@ class ToDataBase:
 
     def __enter__(self):
         self.con = sqlite3.connect(self.db_file)
-        self.con.row_factory = sqlite3.Row  
+        self.con.row_factory = sqlite3.Row
         self.cur = self.con.cursor()
         if self.db_name:
             self.cur.execute(f'''CREATE TABLE IF NOT EXISTS {self.db_name} (id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -87,15 +98,17 @@ class ToDataBase:
                                                             url TEXT UNIQUE,
                                                             photos TEXT)''')
         self.con.commit()
+        logger.info('Database connection established and schema verified.')
         return self
 
     def __exit__(self, exc_type: type[BaseException] | None, exc_value: BaseException, exc_traceback: TracebackType | None) -> bool:
          if exc_type:
-             print(exc_type, exc_value, exc_traceback)
+            logger.error(f"Database error occurred: {exc_value}", exc_info=True)
          if hasattr(self, 'cur'):
              self.cur.close()
          if  hasattr(self, 'con'):
             self.con.close()
+         logger.info('Database connection closed.')
          return False
 
     def to_db(self, data: list) -> None:
@@ -103,17 +116,19 @@ class ToDataBase:
             self.cur.execute(f'''INSERT OR IGNORE INTO {self.db_name} (number_of_bedrooms, category, apartment_size, price, name, description, url, photos) VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
                     (row['number_of_bedrooms'], row['category'], row['apartment_size'], row['price'], row['name'], row['description'], row['url'], row['photos']))
         self.con.commit()
+        logger.info('Data successfully inserted into database.')
 
     def get_all(self, db_name: str) -> list[dict[str, Any]]:
         self.cur.execute(f'''SELECT * FROM {db_name}''')
+        logger.info('All data returned.')
         return self.cur.fetchall()
 
 if __name__ == '__main__':
-    print('Start...')
+    logger.info('Start...')
     parse = Parser('https://www.nestpick.com/search/api/?city=dallas&order=relevance&currency=USD&location=101724385').parse(5)
     with ToJson(parse, 'apartment_test.json') as js:
         js.to_json()
     with ToDataBase('apartment.db', 'apartment') as db:
         db.to_db(parse)
-    print('Success...')
+    logger.info('Success...')
 
