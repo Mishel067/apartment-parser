@@ -98,8 +98,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 *Made with ❤️ and Python by [Mishel067](https://github.com/Mishel067)*
-
-
-Теперь любой, кто откроет твой репозиторий, сразу увидит ссылку на сайт и сможет зайти без всяких установок. Это именно то, как выглядят серьёзные open-source проекты.
-
-**WE TAKE IT ALL.** 🔥
