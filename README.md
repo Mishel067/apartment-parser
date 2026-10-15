@@ -1,91 +1,73 @@
-# 🏢 Dallas Apartment Parser
+#  Dallas Apartment Parser
 
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Status](https://img.shields.io/badge/Status-Active-green.svg)]()
+[![Status](https://img.shields.io/badge/Status-Live-green.svg)](https://mishel067.pythonanywhere.com/)
 
-> A robust ETL (Extract, Transform, Load) pipeline and web dashboard for scraping, cleaning, and visualizing apartment rental listings from the Nestpick API (Dallas, TX). Built with a strong focus on clean architecture, strict type hinting, and safe resource management.
+> A live web dashboard that aggregates and visualizes apartment rental listings from Dallas, TX. Built as a full ETL pipeline — from API scraping to a Flask-powered frontend.
+
+## 🌐 Live Demo
+
+👉 **[Open the website: mishel067.pythonanywhere.com](https://mishel067.pythonanywhere.com/)**
+
+No installation required. The site is deployed and running 24/7 on PythonAnywhere.
 
 ## 📋 About the Project
 
-This project automatically parses real estate listings, transforms raw JSON data into a structured format, and saves it simultaneously to two destinations:
-1. **JSON file** (for quick inspection and backup).
-2. **SQLite database** (for structured storage and web visualization).
+This project solves a real problem: finding affordable apartments in Dallas. It automatically fetches listings from the Nestpick API, cleans and structures the data, stores it in a SQLite database, and presents it through a clean web interface.
 
-Additionally, it includes a lightweight **Flask web interface** to browse the collected data directly in the browser.
+Instead of manually browsing dozens of pages, users can see all available apartments in one place, sorted by price, with photos, descriptions, and direct links to the original listings.
 
-##  Key Features
+## ✨ Key Features
 
-- ✅ **Robust Scraping:** Uses `requests` with realistic browser headers and strict `timeout` settings to bypass basic anti-bot protections.
-- ✅ **Custom Context Managers:** Native implementation of `__enter__` and `__exit__` in `ToJson` and `ToDataBase` classes, guaranteeing safe closure of files and database connections.
-- ✅ **Duplicate Protection:** Utilizes `UNIQUE` constraints and `INSERT OR IGNORE` in SQLite to ensure idempotent data loading.
-- ✅ **Strict Type Hinting:** Fully annotated code (`typing.Any`, `types.TracebackType`) for better IDE support and maintainability.
-- ✅ **Clean Architecture:** Clear Separation of Concerns (SRP) across independent classes: `Parser`, `ToJson`, and `ToDataBase`.
-- ✅ **Web Dashboard:** A simple Flask app to visualize apartments with prices, photos, and descriptions.
+- ✅ **Live Web Dashboard** — Browse 40+ apartments with prices, photos, and descriptions.
+- ✅ **Automated ETL Pipeline** — Fetches data from Nestpick API, transforms it, and loads it into SQLite.
+- ✅ **Duplicate Protection** — `UNIQUE` constraints and `INSERT OR IGNORE` prevent duplicate entries.
+- ✅ **Clean Architecture** — Separation of concerns: `Parser`, `ToJson`, `ToDataBase` classes.
+- ✅ **Custom Context Managers** — Safe resource handling with `__enter__` / `__exit__`.
+- ✅ **Strict Type Hinting** — Full annotations for maintainability.
 
 ## 🛠 Tech Stack
 
-- **Language:** Python 3.12+
+- **Backend:** Python 3.12+, Flask
 - **Data Extraction:** `requests`
-- **Storage:** `sqlite3` (built-in), `json` (built-in)
-- **Web Framework:** `Flask`
-- **Typing:** `typing`, `types`
+- **Storage:** `sqlite3`
+- **Frontend:** HTML5, CSS3 (vanilla)
+- **Deployment:** PythonAnywhere
+- **Version Control:** Git + GitHub
 
-## 📁 Project Structure
+##  Project Structure
 
 ```text
 apartment-parser/
-├── parser.py              # Main script containing parsing and export logic
-├── app.py                 # Flask web application
+├── parser.py              # ETL pipeline (API → JSON → SQLite)
+── app.py                 # Flask web application
 ├── templates/
-│   └── index.html         # HTML template for the web dashboard
-├── apartments.db          # SQLite database (gitignored)
-── apartment_test.json    # JSON export of the data (gitignored)
-├── requirements.txt       # Project dependencies
-├── .gitignore             # Git ignore rules
-└── README.md              # Project documentation
+│   └── index.html         # Dashboard UI
+├── requirements.txt       # Python dependencies
+├── Dockerfile             # Containerization (planned)
+── .gitignore
+└── README.md
 ```
 
-## ⚙️ Installation & Usage
+## ⚙️ Run Locally (Optional)
 
-### 1. Clone the repository
+The live version is already running, but if you want to explore or modify the code:
+
 ```bash
 git clone https://github.com/Mishel067/apartment-parser.git
 cd apartment-parser
-```
 
-### 2. Set up a virtual environment (Recommended)
-```bash
-# For Windows
 python -m venv venv
-venv\Scripts\activate
+source venv/bin/activate  # or venv\Scripts\activate on Windows
 
-# For macOS/Linux
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install dependencies
-```bash
 pip install -r requirements.txt
+python parser.py          # Fetch data
+python app.py             # Start the web server at http://127.0.0.1:5000
 ```
-
-### 4. Run the ETL Pipeline
-To fetch data and populate the database:
-```bash
-python parser.py
-```
-
-### 5. Launch the Web Dashboard
-To view the apartments in your browser:
-```bash
-python app.py
-```
-Open your browser and navigate to `http://127.0.0.1:5000`.
 
 ## 🗄️ Database Schema
 
-The `apartment` table is structured as follows:
 ```sql
 CREATE TABLE IF NOT EXISTS apartment (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -95,21 +77,29 @@ CREATE TABLE IF NOT EXISTS apartment (
     price INTEGER,
     name TEXT,
     description TEXT,
-    url TEXT UNIQUE,       -- Ensures no duplicate listings are inserted
+    url TEXT UNIQUE,
     photos TEXT
 )
 ```
 
 ## 🗺️ Roadmap
 
-- [ ] **v0.2:** Integrate the `logging` module to replace `print()` statements.
-- [ ] **v0.3:** Externalize configuration (API URLs, DB paths) using a `.env` file.
-- [ ] **v0.4:** Add support for multiple cities (e.g., New York, Austin).
-- [ ] **v0.5:** Containerize the application using Docker.
+- [ ] **v0.2** — Structured logging (`logging` module instead of `print`)
+- [ ] **v0.3** — Docker containerization for one-command deployment
+- [ ] **v0.4** — Automated daily data refresh (cron / APScheduler)
+- [ ] **v0.5** — Detailed apartment page with full description
+- [ ] **v0.6** — Interactive map (Leaflet.js + OpenStreetMap) showing apartment locations
+- [ ] **v0.7** — Filters by price, bedrooms, and category
+- [ ] **v1.0** — Multi-city support (New York, Austin, etc.)
 
-##  License
+## 📝 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 *Made with ❤️ and Python by [Mishel067](https://github.com/Mishel067)*
+
+
+Теперь любой, кто откроет твой репозиторий, сразу увидит ссылку на сайт и сможет зайти без всяких установок. Это именно то, как выглядят серьёзные open-source проекты.
+
+**WE TAKE IT ALL.** 🔥
