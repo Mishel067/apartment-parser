@@ -1,4 +1,4 @@
-#  Dallas Apartment Parser
+# 🏢 Dallas Apartment Parser
 
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -25,6 +25,7 @@ Instead of manually browsing dozens of pages, users can see all available apartm
 - ✅ **Duplicate Protection** — `UNIQUE` constraints and `INSERT OR IGNORE` prevent duplicate entries.
 - ✅ **Clean Architecture** — Separation of concerns: `Parser`, `ToJson`, `ToDataBase` classes.
 - ✅ **Custom Context Managers** — Safe resource handling with `__enter__` / `__exit__`.
+- ✅ **Structured Logging** — Professional logging with traceback support (`logging` module) for robust debugging.
 - ✅ **Strict Type Hinting** — Full annotations for maintainability.
 
 ## 🛠 Tech Stack
@@ -36,17 +37,17 @@ Instead of manually browsing dozens of pages, users can see all available apartm
 - **Deployment:** PythonAnywhere
 - **Version Control:** Git + GitHub
 
-##  Project Structure
+## 📁 Project Structure
 
 ```text
 apartment-parser/
 ├── parser.py              # ETL pipeline (API → JSON → SQLite)
-── app.py                 # Flask web application
+├── app.py                 # Flask web application
 ├── templates/
 │   └── index.html         # Dashboard UI
 ├── requirements.txt       # Python dependencies
 ├── Dockerfile             # Containerization (planned)
-── .gitignore
+├── .gitignore
 └── README.md
 ```
 
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS apartment (
 
 ## 🗺️ Roadmap
 
-- [ ] **v0.2** — Structured logging (`logging` module instead of `print`)
+- [x] **v0.2** — Structured logging (`logging` module instead of `print`)
 - [ ] **v0.3** — Docker containerization for one-command deployment
 - [ ] **v0.4** — Automated daily data refresh (cron / APScheduler)
 - [ ] **v0.5** — Detailed apartment page with full description
@@ -93,6 +94,12 @@ CREATE TABLE IF NOT EXISTS apartment (
 - [ ] **v1.0** — Multi-city support (New York, Austin, etc.)
 
 ## 📝 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+*Made with ❤️ and Python by [Mishel067](https://github.com/Mishel067)*
+
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
