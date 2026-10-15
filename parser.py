@@ -74,7 +74,7 @@ class ToDataBase:
 
     def __enter__(self):
         self.con = sqlite3.connect(self.db_file)
-        self.con.row_factory = sqlite3.Row  # но здесь не  cur
+        self.con.row_factory = sqlite3.Row  
         self.cur = self.con.cursor()
         if self.db_name:
             self.cur.execute(f'''CREATE TABLE IF NOT EXISTS {self.db_name} (id INTEGER PRIMARY KEY AUTOINCREMENT,
