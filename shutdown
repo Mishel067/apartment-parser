@@ -1,0 +1,74 @@
+import os
+import time
+from datetime import datetime as dt
+
+timestamp = dt.now()
+with open('log.txt', 'w', encoding='utf8') as log:
+    log.write(f'ВЫКЛЮЧЕН В: {timestamp}')
+
+# Блок 1 - зелёный
+s = list(tuple('\033[92m> Устанавливаю защищённое соединение... █\n')) + \
+    list(tuple('> Обход файрвола: [OK] ███\n\033[0m')) + \
+    list(tuple('> Доступ к ядру ОС получен. █\n')) + \
+    list(tuple('> Загрузка модуля перехвата... ████░░\n'))
+c = 0
+for i in s:
+    print(i, end='', flush=True)
+    c += 1
+    if c % 15 == 0:
+        time.sleep(0.3)
+    time.sleep(0.03)
+
+# Блок 2 - обычный
+s = list(tuple('> Шифрование пользовательских сессий... █████░\n')) + \
+    list(tuple('Права администратора: ЗАХВАЧЕНЫ. ████████\n')) + \
+    list(tuple('> Блокировка восстановления... ███\n')) + \
+    list(tuple('> Инициализация протокола отключения. █\n'))
+for i in s:
+    print(i, end='', flush=True)
+    if i == '\n':
+        time.sleep(1)
+    time.sleep(0.06)
+
+# Анимация блоков перед финалом
+anim = ['█░░░░░░░░░', '██░░░░░░░░', '███░░░░░░░', '████░░░░░░', '█████░░░░░', '██████░░░░', '███████░░░', '████████░░', '█████████░', '██████████']
+for frame in anim:
+    print(f'\r\033[91m> ЗАГРУЗКА: {frame}\033[0m', end='', flush=True)
+    time.sleep(0.15)
+print()  # Переход на новую строку
+
+# Блок 3 - красный
+# Перед последним блоком
+print('\033[91m', end='', flush=True)  # ← Включаем красный СНАЧАЛА
+
+s = list(tuple('> Сохранение системного лога...\n')) + \
+    list(tuple('> Критические процессы остановлены.\n')) + \
+    list(tuple('> СЕССИЯ ЗАВЕРШЕНА.\n')) + \
+    list(tuple('> ВЫ БЫЛИ ВЗЛОМАНЫ. НАВСЕГДА\033[0m'))
+    
+for i in s:
+    print(i, end='', flush=True)
+    if i == '\n':
+        time.sleep(2)
+    time.sleep(0.09)
+
+print('\033[0m', end='', flush=True)  # ← Сбрасываем цвет ПОСЛЕ
+# Мигающий курсор перед вырубкой
+for _ in range(3):
+    print('\r> █', end='', flush=True)
+    time.sleep(0.2)
+    print('\r>  ', end='', flush=True)
+    time.sleep(0.2)
+
+print('\r> \033[0m', end='', flush=True)
+time.sleep(1)
+time.sleep(0.5)
+
+
+
+
+
+
+
+
+

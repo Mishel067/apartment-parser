@@ -1,0 +1,10 @@
+m = 10**9
+a, b = 0, 0
+for x in range(0, 4):
+    for y in range(0, 5):
+        if (int('120' + str(x), 4) + int('130' + str(y), 5)) % 7 == 0:
+            if abs (int('120' + str(x), 4) - int('130' + str(y), 5)) < m:
+                m = abs(int('120' + str(x), 4) - int('130' + str(y), 5))
+                a = int('120' + str(x), 4)
+                b = int('130' + str(y), 5)
+print(a, b)

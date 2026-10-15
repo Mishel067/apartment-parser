@@ -1,0 +1,81 @@
+# ООП: классы, объекты, принципы, атрибуты, методы, property 
+'----------------------'
+# классы и объекты
+class Cat:                               # класс — шаблон; объекты — экземпляры
+    pass
+cat = Cat()                              # создать экземпляр 
+'----------------------'
+# четыре принципа ООП
+# абстракция, инкапсуляция, наследование, полиморфизм 
+'----------------------'
+# атрибуты
+cat.breed = 'Британский'                 # атрибут экземпляра 
+Cat.night_vision = True                  # атрибут класса (общий для всех) 
+cat.__dict__, Cat.__dict__               # все пользовательские атрибуты  
+dir(cat)                                 # список доступных иетодов
+'----------------------'
+# функции-аксессоры
+getattr(obj, name[, default])            # прочитать 
+setattr(obj, name, value)                # установить
+delattr(obj, name)                       # удалить
+hasattr(obj, name)                       # проверить наличие
+'----------------------'
+# методы экземпляра
+class Cat:
+    def say(self):                       # self → текущий объект 
+        print('Мяу')
+Cat.say(cat)   # == cat.say()            # Python передаёт self явно
+'----------------------'
+# инициализатор
+class Cat:
+    def __init__(self, breed, name='?'): # __init__ запускается после создания
+        self.breed = breed
+        self.name = name
+'----------------------'
+# модификаторы «доступа»
+self.public       = 1    # публично
+self._protected   = 2    # соглашение: для внутреннего использования 
+self.__private    = 3    # «name-mangling» → _Class__private
+'----------------------'
+# геттеры / сеттеры / делитеры
+def get_name(self): return self._name  
+def set_name(self, name):                            
+    if name.isalpha(): self._name = name            # проверка значения
+    else: raise ValueError
+def del_name(self): del self._name           
+'----------------------'
+# property()
+name = property(get_name, set_name, del_name, 'имя кошки') 
+# использование: obj.name ↔ get / obj.name = x ↔ set / del obj.name ↔ del
+'----------------------'
+# декоратор @property (короткая запись)
+class Cat:
+    def __init__(self, name): self._name = name
+    @property
+    def name(self): return self._name          # геттер
+    @name.setter
+    def name(self, value): self._name = value  # сеттер
+    @name.deleter
+    def name(self): del self._name             # делитер 
+'----------------------'
+# методы класса и статические методы
+class Cat:
+    @classmethod
+    def make(cls, breed): return cls(breed, 'Безымянный')  
+    @staticmethod
+    def age_in_human_years(age): return age * 7
+'----------------------'
+# singledispatchmethod — перегрузка по типу аргумента (Py 3.8+)
+from functools import singledispatchmethod
+class Pig:
+    @singledispatchmethod
+    def feed(self, food): ...
+    @feed.register(int)          # версия для int
+    def _(self, food): ...
+    @feed.register(str)          # версия для str
+    def _(self, food): ...       
+'----------------------'
+# советы
+# • instance → snake_case, ClassName → UpperCamelCase
+# • изменять атрибуты класса — только через класс, иначе создаётся теневой атрибут
+# • защищённые / приватные имена — договорённость, а не строгий запрет 

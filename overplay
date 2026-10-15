@@ -1,0 +1,83 @@
+import tkinter as tk
+from datetime import datetime
+import winsound 
+
+
+# --- НАСТРОЙКИ ---
+TARGET_DATE = datetime(2026, 8, 1, 14, 30, 0) # 1 августа 2026, 14:30
+BG_IMAGE_PATH = "background.png"              # Имя файла с картинкой
+FONT_SIZE = 20                               # Размер шрифта
+
+# --- СОЗДАНИЕ ОКНА ---
+root = tk.Tk()
+root.title("HUD Timer")
+root.overrideredirect(True)      # Без рамок
+root.attributes('-topmost', True) # Поверх всех окон
+
+# --- ЗАГРУЗКА ФОНА ---
+# --- ЗАГРУЗКА ФОНА ---
+try:
+    bg_img = tk.PhotoImage(file=BG_IMAGE_PATH)
+    w, h = bg_img.width() // 3, bg_img.height() // 9
+    root.geometry(f"{w}x{h}")
+    
+    # Картинка на весь фон
+    bg_label = tk.Label(root, image=bg_img)
+    bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+    
+    # ТАЙМЕР СВЕРХУ (вместо чёрной полосы)
+    label = tk.Label(
+        root, 
+        text="00:00:00:00", 
+        fg="white", 
+        font=("Consolas", FONT_SIZE, "bold"),
+        bg="black",           # Чёрный фон под текстом
+        padx=15,             # Отступы по бокам
+        pady=5               # Отступы сверху/снизу
+    )
+    label.place(relx=0.5, rely=0.15, anchor='center')  # Центр вверху  # Позиция: верхний левый угол (10px от края)
+
+except Exception as e:
+    print(f"Error: {e}")
+    root.geometry("500x200")
+    label = tk.Label(root, text="Error loading image", fg="white", bg="black", font=("Arial", 20))
+    label.pack()
+# --- ЛОГИКА ПЕРЕТАСКИВАНИЯ ---
+def start_drag(event):
+    root.x = event.x
+    root.y = event.y
+
+def drag_window(event):
+    deltax = event.x - root.x
+    deltay = event.y - root.y
+    new_x = root.winfo_x() + deltax
+    new_y = root.winfo_y() + deltay
+    root.geometry(f"+{new_x}+{new_y}")
+
+root.bind("<Button-1>", start_drag)
+root.bind("<B1-Motion>", drag_window)
+
+# --- ТАЙМЕР ---
+def update_timer():
+    now = datetime.now()
+    diff = TARGET_DATE - now
+    
+    if diff.total_seconds() <= 0:
+        label.config(text="TIME IS UP")
+        winsound.Beep(1000, 500)  # Сигнал когда время вышло
+        return
+
+    days = diff.days
+    hours, rem = divmod(diff.seconds, 3600)
+    minutes, seconds = divmod(rem, 60)
+    
+    text = f"{days:02d}:{hours:02d}:{minutes:02d}:{seconds:02d}"
+    label.config(text=text)
+    
+    # ТИК-ТАК ЗВУК (каждую секунду)
+    winsound.Beep(800, 50)  # 800 Hz, 50 ms
+    
+    root.after(1000, update_timer)
+
+update_timer()
+root.mainloop()
