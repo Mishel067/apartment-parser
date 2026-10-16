@@ -83,6 +83,15 @@ docker run -p 5000:5000 apartment-parser
 
 Open your browser at `http://localhost:5000`.
 
+## 🐳 Run with Docker Hub (Easiest)
+
+No need to clone the repository. Just pull and run:
+
+```bash
+docker pull mishel067/apartment-parser:v0.3
+docker run -p 5000:5000 mishel067/apartment-parser:v0.3
+```
+
 ## 🗄️ Database Schema
 
 ```sql
