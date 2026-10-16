@@ -1,0 +1,37 @@
+# ================= PYTHON =================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# ================= VIRTUAL ENV =================
+venv/
+.venv/
+env/
+ENV/
+
+# ================= IDE & OS =================
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ================= GIT =================
+.git/
+.gitignore
+
+# ================= PROJECT DATA & LOGS =================
+*.db
+*.sqlite
+*.sqlite3
+*.log
+app.log
+
+*.json
+apartment_test.json
+
+# ================= DOCS =================
+README.md
+LICENSE
