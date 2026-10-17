@@ -88,10 +88,10 @@ No need to clone the repository or install dependencies. Just pull the pre-built
 
 ```bash
 # Pull the latest image from Docker Hub
-docker pull mishel067/apartment-parser:v0.4
+docker pull mishel067/apartment-parser:v0.5
 
 # Run the container
-docker run -p 5000:5000 mishel067/apartment-parser:v0.4
+docker run -p 5000:5000 mishel067/apartment-parser:v0.5
 ```
 
 Open your browser at `http://localhost:5000`.
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS apartment (
 - [x] **v0.2** — Structured logging (`logging` module instead of `print`)
 - [x] **v0.3** — Docker containerization for one-command deployment
 - [x] **v0.4** — Automated daily data refresh (APScheduler)
-- [ ] **v0.5** — Detailed apartment page with full description
+- [x] **v0.5** — Detailed apartment page with full description
 - [ ] **v0.6** — Interactive map (Leaflet.js + OpenStreetMap) showing apartment locations
 - [ ] **v0.7** — Filters by price, bedrooms, and category
 - [ ] **v1.0** — Multi-city support (New York, Austin, etc.)
