@@ -11,6 +11,7 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
+
 DB_PATH = os.path.join(os.path.dirname(__file__), 'apartment.db')
 app = Flask(__name__)
 
@@ -37,20 +38,34 @@ def home():
     try:
         if not os.path.exists(DB_PATH):
             return "❌ Database file not found."
-
         conn = sqlite3.connect(DB_PATH)
         conn.row_factory = sqlite3.Row
         apartments = conn.execute('SELECT * FROM apartment ORDER BY price ASC').fetchall()
         conn.close()
-
         if len(apartments) == 0:
-            return "📭 Database is empty."
-
+            return " Database is empty."
         return render_template('index.html', apartments=apartments)
     except Exception as e:
         logger.error(f"Error: {e}", exc_info=True)
-        return f"❌ Error: {e}"
+        return f" Error: {e}"
 
+@app.route('/apartment/<int:apt_id>')
+def apartment_details(apt_id):
+    logger.info('Trying to get apartment')
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        logger.info('Connected to database')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.execute('SELECT * FROM apartment WHERE id = ?', (apt_id,))
+        apartment = cursor.fetchone()
+        logger.info('Fetched apartment')
+        conn.close()
+        if apartment is None:
+            logger.warning(f"Apartment {apt_id} not found.")
+            return "❌ Apartment not found."
+        return render_template('details.html', apartment=apartment)
+    except Exception as e:
+        logger.error(f"Error: {e}", exc_info=True)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
